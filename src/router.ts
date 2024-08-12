@@ -4,6 +4,7 @@ import compose from 'koa-compose'
 import { getActionData } from './action'
 import { getControllerData } from './controller'
 import { getMiddlewares } from './middleware'
+import { getParamData } from './params'
 
 export type ControllerClass<T = any> = new () => T
 
@@ -86,6 +87,9 @@ function createRouterFromController<StateT = DefaultState, ContextT = DefaultCon
         const actionProps = getActionData(controllerClass.prototype, methodName)
         if (!actionProps) continue
 
+        //获取请求参数注解
+        const paramDecorators = getParamData(controllerClass.prototype, methodName)
+
         //获取所有的路由中间件
         const actionMiddlewares =
             getMiddlewares<StateT, ContextT>(controllerClass.prototype, methodName) ?? []
@@ -93,7 +97,16 @@ function createRouterFromController<StateT = DefaultState, ContextT = DefaultCon
         //动作方法
         const action: Middleware<StateT, ContextT> = async (ctx, next) => {
             const instance = getControllerInstance()
-            const body = await actionMethod.call(instance, ctx)
+
+            //构造请求参数
+            const params: any[] = [ctx]
+            if (Array.isArray(paramDecorators)) {
+                paramDecorators.forEach((getter, index) => {
+                    params[index] = getter(ctx)
+                })
+            }
+
+            const body = await actionMethod.apply(instance, params)
             if (typeof body !== 'undefined' && typeof ctx.body === 'undefined') {
                 ctx.body = body
             }

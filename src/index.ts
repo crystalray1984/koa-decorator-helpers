@@ -11,4 +11,7 @@ export {
     createMiddlewareFactoryDecorator,
 } from './middleware'
 
+export type { ActionParamGetter } from './params'
+export { FromBody, FromParam, FromQuery } from './params'
+
 export * from './router'
