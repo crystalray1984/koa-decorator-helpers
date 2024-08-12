@@ -31,10 +31,7 @@ export function createRouter<StateT = DefaultState, ContextT = DefaultContext>(
     for (const controllerClass of controllers) {
         const subRouter = createRouterFromController<StateT, ContextT>(controllerClass, opts)
         if (!subRouter) continue
-        //把子路由上的前缀改为在父级路由定义
-        const subPrefix = subRouter.opts.prefix!
-        subRouter.prefix('')
-        rootRouter.use(subPrefix, subRouter.middleware(), subRouter.allowedMethods())
+        rootRouter.use(subRouter.middleware(), subRouter.allowedMethods())
     }
 
     return rootRouter
