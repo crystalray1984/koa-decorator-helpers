@@ -5,6 +5,10 @@ export type { ControllerProps } from './controller'
 export { Controller } from './controller'
 
 export type { DecoratedMiddleware } from './middleware'
-export { Middlewares, createMiddlewareDecorator } from './middleware'
+export {
+    Middlewares,
+    createMiddlewareDecorator,
+    createMiddlewareFactoryDecorator,
+} from './middleware'
 
 export * from './router'

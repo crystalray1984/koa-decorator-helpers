@@ -72,20 +72,45 @@ export type DecoratedMiddleware<ContextT, ArgsT extends any[] = []> = (
 
 /**
  * 将一个中间件包装成一个装饰器
+ * @param middleware 待包装的中间件
+ * @param isArgumentsRequired 参数是否为必需
  */
 export function createMiddlewareDecorator<
     ArgsT extends any[] = [],
     StateT = DefaultState,
     ContextT = DefaultContext,
     ResponseBodyT = any
->(middleware: DecoratedMiddleware<ParameterizedContext<StateT, ContextT, ResponseBodyT>, ArgsT>) {
+>(
+    middleware: DecoratedMiddleware<ParameterizedContext<StateT, ContextT, ResponseBodyT>, ArgsT>,
+    isArgumentsRequired = false
+) {
     return defineCompatibleDecorator<ArgsT>((target, ...args) => {
         //包装一下中间件方法，可以接受更多的参数
         const decorated: KoaMiddleware<StateT, ContextT, ResponseBodyT> = (ctx, next) =>
             middleware(ctx, next, ...args)
 
         setMiddlewares(target, [decorated])
-    }, false)
+    }, isArgumentsRequired)
+}
+
+/**
+ * 将一个中间件工厂包装为装饰器
+ * @param factory 中间件工厂
+ * @param isArgumentsRequired 装饰器参数是否为必需
+ */
+export function createMiddlewareFactoryDecorator<
+    ArgsT extends any[] = [],
+    StateT = DefaultState,
+    ContextT = DefaultContext,
+    ResponseBodyT = any
+>(
+    factory: (...args: ArgsT) => KoaMiddleware<StateT, ContextT, ResponseBodyT>,
+    isArgumentsRequired = false
+) {
+    return defineCompatibleDecorator<ArgsT>((target, ...args) => {
+        const middleware = factory(...args)
+        setMiddlewares(target, [middleware])
+    }, isArgumentsRequired)
 }
 
 /**
