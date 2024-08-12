@@ -15,17 +15,26 @@ export type ActionParamGetter = <
 
 export type ActionParamData = ActionParamGetter[]
 
-/**
- * 将请求体作为方法参数传入，来自ctx.request.body
- */
-export const FromBody = defineParameterDecorator((target, propertyKey, parameterIndex) => {
+function setParamGetter(
+    target: Object,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+    getter: ActionParamGetter
+) {
     let data: ActionParamGetter[] = Reflect.getOwnMetadata(PARAMS, target, propertyKey)
     if (!data) {
         data = []
         Reflect.defineMetadata(PARAMS, data, target, propertyKey)
     }
+    data[parameterIndex] = getter
+}
+
+/**
+ * 将请求体作为方法参数传入，来自ctx.request.body
+ */
+export const FromBody = defineParameterDecorator((target, propertyKey, parameterIndex) => {
     // @ts-ignore
-    data[parameterIndex] = (ctx) => ctx.request.body
+    setParamGetter(target, propertyKey, parameterIndex, (ctx) => ctx.request.body)
 })
 
 /**
@@ -33,12 +42,7 @@ export const FromBody = defineParameterDecorator((target, propertyKey, parameter
  */
 export const FromQuery = defineParameterDecorator(
     (target, propertyKey, parameterIndex, name: string) => {
-        let data: ActionParamGetter[] = Reflect.getOwnMetadata(PARAMS, target, propertyKey)
-        if (!data) {
-            data = []
-            Reflect.defineMetadata(PARAMS, data, target, propertyKey)
-        }
-        data[parameterIndex] = (ctx) => ctx.query[name]
+        setParamGetter(target, propertyKey, parameterIndex, (ctx) => ctx.query[name])
     },
     true
 )
@@ -48,15 +52,28 @@ export const FromQuery = defineParameterDecorator(
  */
 export const FromParam = defineParameterDecorator(
     (target, propertyKey, parameterIndex, name: string) => {
-        let data: ActionParamGetter[] = Reflect.getOwnMetadata(PARAMS, target, propertyKey)
-        if (!data) {
-            data = []
-            Reflect.defineMetadata(PARAMS, data, target, propertyKey)
-        }
-        // @ts-ignore
-        data[parameterIndex] = (ctx: RouterContext) => ctx.params[name]
+        setParamGetter(
+            target,
+            propertyKey,
+            parameterIndex,
+            // @ts-ignore
+            (ctx: RouterContext) => ctx.params[name]
+        )
     },
     true
+)
+
+/**
+ * 从ctx.state获取方法参数
+ */
+export const FromState = defineParameterDecorator(
+    (target, propertyKey, parameterIndex, name?: string) => {
+        setParamGetter(target, propertyKey, parameterIndex, (ctx) =>
+            // @ts-ignore
+            typeof name === 'string' ? ctx.state[name] : ctx.state
+        )
+    },
+    false
 )
 
 /**

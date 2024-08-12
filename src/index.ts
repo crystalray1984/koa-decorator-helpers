@@ -12,6 +12,6 @@ export {
 } from './middleware'
 
 export type { ActionParamGetter } from './params'
-export { FromBody, FromParam, FromQuery } from './params'
+export { FromBody, FromParam, FromQuery, FromState } from './params'
 
 export * from './router'
