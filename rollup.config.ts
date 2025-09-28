@@ -1,5 +1,5 @@
 import { defineConfig } from 'rollup'
-import ts from 'rollup-plugin-ts'
+import ts from '@rollup/plugin-typescript'
 
 const external = [
     '@koa/router',

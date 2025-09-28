@@ -1,6 +1,6 @@
 {
     "name": "koa-decorator-helpers",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "",
     "keywords": [
         "koa",
@@ -13,42 +13,28 @@
     "author": "Lei Zheng <crystalray@qq.com>",
     "license": "MIT",
     "scripts": {
-        "test": "jest",
-        "build": "rimraf ./dist && tsc -p tsconfig.build.json && rollup --config rollup.config.ts --configPlugin ts"
+        "build": "rimraf ./dist && tsc -p tsconfig.build.json && rollup --config rollup.config.ts --configPlugin typescript"
     },
     "peerDependencies": {
         "@koa/router": "*",
-        "koa": "^2.0.0"
+        "koa": ">=2.0.0"
     },
     "devDependencies": {
         "@koa/router": "^12.0.1",
-        "@tsconfig/node20": "^20.1.4",
-        "@types/jest": "^29.5.12",
+        "@tsconfig/node22": "^22.0.2",
         "@types/koa": "^2.15.0",
         "@types/koa__router": "^12.0.4",
         "@types/node": "^22.1.0",
-        "jest": "^29.7.0",
         "koa": "^2.15.3",
         "rimraf": "^6.0.1",
         "rollup": "^4.20.0",
-        "rollup-plugin-ts": "^3.4.5",
-        "ts-jest": "^29.2.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.5.4"
     },
     "dependencies": {
+        "@rollup/plugin-typescript": "^12.1.4",
         "decorator-helper": "^1.0.3",
         "reflect-metadata": "^0.2.2"
-    },
-    "jest": {
-        "preset": "ts-jest",
-        "roots": [
-            "src"
-        ],
-        "testMatch": [
-            "**/*.test.ts"
-        ],
-        "collectCoverage": true
     },
     "files": [
         "dist"
