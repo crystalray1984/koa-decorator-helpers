@@ -50,7 +50,7 @@ function createRouterFromController<StateT = DefaultState, ContextT = DefaultCon
     if (!controllerProps) return
 
     const prefix =
-        typeof controllerProps.prefix === 'string' && controllerProps.prefix
+        typeof controllerProps.prefix === 'string'
             ? controllerProps.prefix
             : `/${controllerClass.name}`
 

@@ -1,6 +1,6 @@
 {
     "name": "koa-decorator-helpers",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "",
     "keywords": [
         "koa",
@@ -29,6 +29,7 @@
         "rimraf": "^6.0.1",
         "rollup": "^4.20.0",
         "ts-node": "^10.9.2",
+        "tslib": "^2.8.1",
         "typescript": "^5.5.4"
     },
     "dependencies": {
